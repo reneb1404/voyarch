@@ -1,21 +1,56 @@
 import { forwardRef, InputHTMLAttributes, useId } from "react";
 
+type InputVariant =
+	| "primary"
+	| "secondary"
+	| "accent"
+	| "neutral"
+	| "info"
+	| "success"
+	| "warning"
+	| "error"
+	| "ghost"
+	| "link";
+
 interface InputProps extends Omit<
 	InputHTMLAttributes<HTMLInputElement>,
 	"type"
 > {
 	label?: string;
-	type?: "text" | "email" | "password" | "checkbox" | "date" | "number";
+	variant?: InputVariant;
+	labelClassName?: string;
+	type?:
+		| "text"
+		| "email"
+		| "password"
+		| "checkbox"
+		| "date"
+		| "number"
+		| "search";
 	error?: string;
+	reserveErrorSpace?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-	({ label, type = "text", error, className, id, ...rest }, ref) => {
+	(
+		{
+			label,
+			variant = "primary",
+			labelClassName,
+			type = "text",
+			reserveErrorSpace = true,
+			error,
+			className,
+			id,
+			...rest
+		},
+		ref,
+	) => {
 		const inputId = id ?? useId();
 		const errorId = `${inputId}-error`;
 
 		return (
-			<div className="w-full mb-3">
+			<div className={`w-full mb-3 ${className ?? ""}`}>
 				{label && (
 					<label htmlFor={inputId} className="label">
 						{label}
@@ -24,7 +59,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
 				<label
 					htmlFor={inputId}
-					className={`input w-full ${error ? "input-error" : ""} ${className ?? ""}`}
+					className={`input w-full ${error ? "input-error" : `input-${variant}`} ${labelClassName ?? ""}`}
 				>
 					<input
 						id={inputId}
@@ -37,12 +72,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 					/>
 				</label>
 
-				<span
-					id={errorId}
-					className="label-text-alt text-error mt-1 block min-h-5"
-				>
-					{error ?? ""}
-				</span>
+				{(error || reserveErrorSpace) && (
+					<span
+						id={errorId}
+						className="label-text-alt text-error mt-1 block min-h-5"
+					>
+						{error ?? ""}
+					</span>
+				)}
 			</div>
 		);
 	},

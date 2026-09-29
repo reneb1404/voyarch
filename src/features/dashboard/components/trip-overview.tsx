@@ -1,7 +1,7 @@
 //TODO get overview from db
 
 import Link from "next/link";
-import { TripCard } from "./TripCard";
+import { TripCard } from "./trip-card";
 
 const mockData = [
 	{
